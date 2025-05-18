@@ -32,7 +32,13 @@ import java.util.Iterator;
  * </pre>
  **/
 public class Route {
-
+	private final List<GeoSegment> segments;
+	private final List<GeoFeature> features;
+	private final GeoPoint start;
+	private final GeoPoint end;
+	private final double startHeading;
+	private final double endHeading;
+	private final double length;
 	
  	// TODO Write abstraction function and representation invariant
 
@@ -47,16 +53,33 @@ public class Route {
      *          r.end = gs.p2
      **/
   	public Route(GeoSegment gs) {
-  		// TODO Implement this constructor
+		this.segments = new ArrayList<>();
+		this.features = new ArrayList<>();
+		this.segments.add(gs);
+		this.features.add(new GeoFeature(gs));
+		this.start = gs.getP1();
+		this.end = gs.getP2();
+		this.startHeading = gs.getHeading();
+		this.endHeading = gs.getHeading();
+		this.length = gs.getLength();
   	}
 
+	private Route(List<GeoSegment> segments, List<GeoFeature> features) {
+		this.segments = Collections.unmodifiableList(segments);
+		this.features = Collections.unmodifiableList(features);
+		this.start = segments.get(0).getP1();
+		this.end = segments.get(segments.size() - 1).getP2();
+		this.startHeading = segments.get(0).getHeading();
+		this.endHeading = segments.get(segments.size() - 1).getHeading();
+		this.length = segments.stream().mapToDouble(GeoSegment::getLength).sum();
+	}
 
     /**
      * Returns location of the start of the route.
      * @return location of the start of the route.
      **/
   	public GeoPoint getStart() {
-  		// TODO Implement this method
+		return start;
   	}
 
 
@@ -65,7 +88,7 @@ public class Route {
      * @return location of the end of the route.
      **/
   	public GeoPoint getEnd() {
-  		// TODO Implement this method
+		return end;
   	}
 
 
@@ -75,7 +98,7 @@ public class Route {
    	 *         route, in degrees.
    	 **/
   	public double getStartHeading() {
-  		// TODO Implement this method
+  		return startHeading;
   	}
 
 
@@ -85,7 +108,7 @@ public class Route {
      *         route, in degrees.
      **/
   	public double getEndHeading() {
-  		// TODO Implement this method
+  		return endHeading;
   	}
 
 
@@ -96,7 +119,7 @@ public class Route {
      *         traverse the route. These values are not necessarily equal.
    	 **/
   	public double getLength() {
-  		// TODO Implement this method
+  		return length;
   	}
 
 
@@ -110,7 +133,21 @@ public class Route {
      *         r.length = this.length + gs.length
      **/
   	public Route addSegment(GeoSegment gs) {
-  		// TODO Implement this method
+		if (!gs.getP1().equals(this.end)) throw new IllegalArgumentException("Segment is not connected to route end.");
+
+		List<GeoSegment> newSegments = new ArrayList<>(this.segments);
+		newSegments.add(gs);
+
+		List<GeoFeature> newFeatures = new ArrayList<>(this.features);
+		GeoFeature lastFeature = newFeatures.get(newFeatures.size() - 1);
+
+		if (gs.getName().equals(lastFeature.getName())) {
+			newFeatures.set(newFeatures.size() - 1, lastFeature.addSegment(gs));
+		} else {
+			newFeatures.add(new GeoFeature(gs));
+		}
+
+		return new Route(newSegments, newFeatures);
   	}
 
 
@@ -133,7 +170,7 @@ public class Route {
      * @see homework1.GeoFeature
      **/
   	public Iterator<GeoFeature> getGeoFeatures() {
-  		// TODO Implement this method
+		return features.iterator();
   	}
 
 
@@ -152,7 +189,7 @@ public class Route {
      * @see homework1.GeoSegment
      **/
   	public Iterator<GeoSegment> getGeoSegments() {
-  		// TODO Implement this method
+		return segments.iterator();
   	}
 
 
@@ -163,7 +200,10 @@ public class Route {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		// TODO Implement this method
+		if (this == o) return true;
+		if (!(o instanceof Route)) return false;
+		Route route = (Route) o;
+		return this.features.equals(route.features);
   	}
 
 
@@ -172,10 +212,11 @@ public class Route {
      * @return a hash code for this.
      **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it
-    	// for improved performance.
-
-    	return 1;
+		int result = 17;
+		result = 31 * result + start.hashCode();
+		result = 31 * result + end.hashCode();
+		result = 31 * result + features.hashCode();
+		return result;
   	}
 
 
@@ -184,6 +225,7 @@ public class Route {
      * @return a string representation of this.
      **/
   	public String toString() {
+		return "Route{start=" + start + ", end=" + end + ", length=" + length + ", segments=" + segments.size() + "}";
   	}
 
 }
