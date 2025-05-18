@@ -19,12 +19,16 @@ public abstract class RouteFormatter {
      * 	       human-readable directions from start to end along this route.
      **/
   	public String computeDirections(Route route, double heading) {
-  		// Implementation hint:
-		// This method should call computeLine() for each geographic
-		// feature in this route and concatenate the results into a single
-		// String.
-  		
-  		// TODO Implement this method
+		StringBuilder directions = new StringBuilder();
+		Iterator<GeoFeature> it = route.getGeoFeatures();
+
+		while (it.hasNext()) {
+			GeoFeature feature = it.next();
+			directions.append(computeLine(feature, heading));
+			heading = feature.getEndHeading();
+		}
+
+		return directions.toString();
   	}
 
 
@@ -61,7 +65,16 @@ public abstract class RouteFormatter {
      * and likewise for left turns.
      */
   	protected String getTurnString(double origHeading, double newHeading) {
-  		// TODO Implement this method
+		double angle = (newHeading - origHeading + 360) % 360;
+
+		if (angle < 10 || angle > 350) return "Continue";
+		if (angle < 60) return "Turn slight right";
+		if (angle < 120) return "Turn right";
+		if (angle < 179) return "Turn sharp right";
+		if (angle <= 181) return "U-turn";
+		if (angle < 240) return "Turn sharp left";
+		if (angle < 300) return "Turn left";
+		return "Turn slight left";
   	}
 
 }

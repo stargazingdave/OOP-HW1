@@ -52,14 +52,11 @@ public class WalkingRouteFormatter extends RouteFormatter {
      * above.
      **/
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
-  		
-		// Implementation hint:
-		// You may find the class java.text.DecimalFormat useful when
-		// implementing this method. More info can be found at:
-		// http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
-		// and at:
-		// http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
-					 
-  		// TODO Implement this method
+		public String computeLine(GeoFeature geoFeature, double origHeading) {
+			String turn = getTurnString(origHeading, geoFeature.getStartHeading());
+			String name = geoFeature.getName();
+			long minutes = Math.round(geoFeature.getLength() * 20); // 20 min/km
+			return String.format("%s onto %s and walk for %d minutes.\n", turn, name, minutes);
+		}
   	}
 }
