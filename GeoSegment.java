@@ -149,7 +149,11 @@ public class GeoSegment {
      * @return a hash code value for this.
      **/
     public int hashCode() {
-        return this.name.hashCode() + this.p1.hashCode() + this.p2.hashCode();
+        int result = 17;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + start.hashCode();
+        result = 31 * result + end.hashCode();
+        return result;
     }
 
 
