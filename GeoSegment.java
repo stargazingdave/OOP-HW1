@@ -1,7 +1,7 @@
 package homework1;
 
 /**
- * A GeoSegment models a straight line segment on the earth. GeoSegments 
+ * A GeoSegment models a straight line segment on the earth. GeoSegments
  * are immutable.
  * <p>
  * A compass heading is a nonnegative real number less than 360. In compass
@@ -21,7 +21,7 @@ package homework1;
  * ("Trumpeldor Avenue", a, i), ("Trumpeldor Avenue", z, i),
  * ("Hanita", i, j), and ("Hanita", j, k).
  * </p>
- * 
+ *
  * </p>
  * A name is given to all GeoSegment objects so that it is possible to
  * differentiate between two GeoSegment objects with identical
@@ -39,109 +39,136 @@ package homework1;
  *   heading : angle     // compass heading from p1 to p2, in degrees
  * </pre>
  **/
-public class GeoSegment  {
+public class GeoSegment {
+    private final String name;
+    private final GeoPoint p1;
+    private final GeoPoint p2;
 
-	
-  	// TODO Write abstraction function and representation invariant
-	
-	
-  	/**
+    // TODO Write abstraction function and representation invariant
+
+
+    /**
      * Constructs a new GeoSegment with the specified name and endpoints.
+     *
      * @requires name != null && p1 != null && p2 != null
      * @effects constructs a new GeoSegment with the specified name and endpoints.
      **/
-  	public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
-  		// TODO Implement this method
-  	}
+    public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
+        this.name = name;
+        this.p1 = p1;
+        this.p2 = p2;
+    }
 
 
-  	/**
+    /**
      * Returns a new GeoSegment like this one, but with its endpoints reversed.
+     *
      * @return a new GeoSegment gs such that gs.name = this.name
-     *         && gs.p1 = this.p2 && gs.p2 = this.p1
+     * && gs.p1 = this.p2 && gs.p2 = this.p1
      **/
-  	public GeoSegment reverse() {
-  		// TODO Implement this method
-  	}
+    public GeoSegment reverse() {
+        GeoSegment gs = new GeoSegment(this.name, this.p2, this.p1);
+        return gs;
+    }
 
 
-  	/**
-  	 * Returns the name of this GeoSegment.
+    /**
+     * Returns the name of this GeoSegment.
+     *
      * @return the name of this GeoSegment.
      */
-  	public String getName() {
-  		// TODO Implement this method
-  	}
+    public String getName() {
+        return this.name;
+    }
 
 
-  	/**
-  	 * Returns first endpoint of the segment.
+    /**
+     * Returns first endpoint of the segment.
+     *
      * @return first endpoint of the segment.
      */
-  	public GeoPoint getP1() {
-  		// TODO Implement this method
-  	}
+    public GeoPoint getP1() {
+        return this.p1;
+    }
 
 
-  	/**
-  	 * Returns second endpoint of the segment.
+    /**
+     * Returns second endpoint of the segment.
+     *
      * @return second endpoint of the segment.
      */
-  	public GeoPoint getP2() {
-  		// TODO Implement this method
-  	}
+    public GeoPoint getP2() {
+        return this.p2;
+    }
 
 
-  	/**
-  	 * Returns the length of the segment.
+    /**
+     * Returns the length of the segment.
+     *
      * @return the length of the segment, using the flat-surface, near the
-     *         Technion approximation.
+     * Technion approximation.
      */
-  	public double getLength() {
-  		// TODO Implement this method
-  	}
+    public double getLength() {
+        return this.p1.distanceTo(this.p2);
+    }
 
 
-  	/**
-  	 * Returns the compass heading from p1 to p2.
-     * @requires this.length != 0
+    /**
+     * Returns the compass heading from p1 to p2.
+     *
      * @return the compass heading from p1 to p2, in degrees, using the
-     *         flat-surface, near the Technion approximation.
+     * flat-surface, near the Technion approximation.
+     * @requires this.length != 0
      **/
-  	public double getHeading() {
-  		// TODO Implement this method
-  	}
+    public double getHeading() {
+        retrurn this.p1.headingTo(this.p2);
+    }
 
 
-  	/**
+    /**
      * Compares the specified Object with this GeoSegment for equality.
+     *
      * @return gs != null && (gs instanceof GeoSegment)
-     *         && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
-   	 **/
-  	public boolean equals(Object gs) {
-  		// TODO Implement this method
-  	}
+     * && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
+     **/
+    public boolean equals(Object gs) {
+        if (this == gs) return true;
+        if (gs == null || !(gs instanceof GeoSegment)) return false;
+
+        GeoSegment other = (GeoSegment) gs;
+        boolean sameName = this.name.equals(other.name);
+        boolean sameP1 = this.p1.equals(other.p1);
+        boolean sameP2 = this.p2.equals(other.p2);
+        return sameName && sameP1 && sameP2;
+    }
 
 
-  	/**
-  	 * Returns a hash code value for this.
+    /**
+     * Returns a hash code value for this.
+     *
      * @return a hash code value for this.
      **/
-  	public int hashCode() {
-    	// This implementation will work, but you may want to modify it 
-    	// for improved performance. 
-
-    	return 1;
-  	}
+    public int hashCode() {
+        return this.name.hashCode() + this.p1.hashCode() + this.p2.hashCode();
+    }
 
 
-  	/**
-  	 * Returns a string representation of this.
+    /**
+     * Returns a string representation of this.
+     *
      * @return a string representation of this.
      **/
-  	public String toString() {
-  		// TODO Implement this method
-  	}
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GeoSegment: ");
+        sb.append(this.name);
+        sb.append(" [");
+        sb.append(this.p1.toString());
+        sb.append(", ");
+        sb.append(this.p2.toString());
+        sb.append("]");
+        return sb.toString();
+    }
 
 }
 
