@@ -24,16 +24,16 @@ import java.text.DecimalFormat;
  * should include no extra spaces other than those shown above.
  */
 public class DrivingRouteFormatter extends RouteFormatter {
-  
-  	/**
+
+    /**
      * Computes a single line of a multi-line directions String that
      * represents the instructions for traversing a single geographic
      * feature.
-     * @requires 0 <= origHeading < 360
-     * @param geoFeature the geographical feature to traverse.
+     *
+     * @param geoFeature  the geographical feature to traverse.
      * @param origHeading the initial heading.
      * @return A newline-terminated <tt>String</tt> that gives
-     * 		   directions on how to traverse this geographical feature.<br>
+     * directions on how to traverse this geographical feature.<br>
      * Calling <tt>computeLine</tt> with a GeoFeature instance and an
      * initial heading should produce a newline-terminated String in the
      * following form:
@@ -48,17 +48,14 @@ public class DrivingRouteFormatter extends RouteFormatter {
      * tenth-of-a-kilometer precision. The String should be terminated by a
      * newline and should include no extra spaces other than those shown
      * above.
+     * @requires 0 <= origHeading < 360
      **/
-  	public String computeLine(GeoFeature geoFeature, double origHeading) {
-  		
-  		// Implementation hint:
-		// You may find the class java.text.DecimalFormat useful when
-		// implementing this method. More info can be found at:
-  	    // http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
-  		// and at:
-  		// http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
-		   		
-  		// TODO Implement this method
-  	}
+    public String computeLine(GeoFeature geoFeature, double origHeading) {
+        String turn = getTurnString(origHeading, geoFeature.getStartHeading());
+        String name = geoFeature.getName();
+        DecimalFormat df = new DecimalFormat("0.0");
+        String distance = df.format(geoFeature.getLength());
+        return String.format("%s onto %s and go %s kilometers.\n", turn, name, distance);
+    }
 
 }
