@@ -26,15 +26,15 @@ import java.text.DecimalFormat;
  **/
 public class WalkingRouteFormatter extends RouteFormatter {
 
-  	/**
+    /**
      * Computes a single line of a multi-line directions String that
      * represents the instructions for walking along a single geographic
      * feature.
-     * @requires 0 <= origHeading < 360
-     * @param geoFeature the geographical feature to traverse.
+     *
+     * @param geoFeature  the geographical feature to traverse.
      * @param origHeading the initial heading.
      * @return A newline-terminated <tt>String</tt> that gives directions
-     * 		   on how to walk along this geographical feature.<br>
+     * on how to walk along this geographical feature.<br>
      * Calling <tt>computeLine</tt> with a GeoFeature instance and an
      * initial heading should produce a newline-terminated String in the
      * following form:
@@ -50,13 +50,12 @@ public class WalkingRouteFormatter extends RouteFormatter {
      * reported to the nearest minute. Each line should be terminated by a
      * newline and should include no extra spaces other than those shown
      * above.
+     * @requires 0 <= origHeading < 360
      **/
-  	public String computeLine(GeoFeature geoFeature, double origHeading) {
-		public String computeLine(GeoFeature geoFeature, double origHeading) {
-			String turn = getTurnString(origHeading, geoFeature.getStartHeading());
-			String name = geoFeature.getName();
-			long minutes = Math.round(geoFeature.getLength() * 20); // 20 min/km
-			return String.format("%s onto %s and walk for %d minutes.\n", turn, name, minutes);
-		}
-  	}
+    public String computeLine(GeoFeature geoFeature, double origHeading) {
+        String turn = getTurnString(origHeading, geoFeature.getStartHeading());
+        String name = geoFeature.getName();
+        long minutes = Math.round(geoFeature.getLength() * 20); // 20 min/km
+        return String.format("%s onto %s and walk for %d minutes.\n", turn, name, minutes);
+    }
 }

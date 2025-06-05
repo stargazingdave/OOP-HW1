@@ -64,19 +64,20 @@ public class GeoPoint {
      */
     public static final double KM_PER_DEGREE_LONGITUDE = 93.681;
 
-    // Implementation hint:
-    // Doubles and floating point math can cause some problems. The exact
-    // value of a double can not be guaranteed except within some epsilon.
-    // Because of this, using doubles for the equals() and hashCode()
-    // methods can have erroneous results. Do not use floats or doubles for
-    // any computations in hashCode(), equals(), or where any other time
-    // exact values are required. (Exact values are not required for length
-    // and distance computations). Because of this, you should consider
-    // using ints for your internal representation of GeoPoint.
 
+    // Abs. Function:
+    //   represents a point on the earth's surface
+    //   (this.latitude, this.longitude) in millionths of degrees
+    //   The point represents a fixed geographic location near the Technion.
 
-    // TODO Write abstraction function and representation invariant
+    // Rep. Invariant:
+    //   MIN_LATITUDE <= latitude <= MAX_LATITUDE
+    //   MIN_LONGITUDE <= longitude <= MAX_LONGITUDE
 
+    private void checkRep() {
+        assert latitude >= MIN_LATITUDE && latitude <= MAX_LATITUDE : "Latitude out of bounds";
+        assert longitude >= MIN_LONGITUDE && longitude <= MAX_LONGITUDE : "Longitude out of bounds";
+    }
 
     /**
      * Constructs GeoPoint from a latitude and longitude.
@@ -91,6 +92,7 @@ public class GeoPoint {
     public GeoPoint(int latitude, int longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+        checkRep();
     }
 
 
@@ -100,6 +102,7 @@ public class GeoPoint {
      * @return the latitude of this in millionths of degrees.
      */
     public int getLatitude() {
+        checkRep();
         return latitude;
     }
 
@@ -110,6 +113,7 @@ public class GeoPoint {
      * @return the latitude of this in millionths of degrees.
      */
     public int getLongitude() {
+        checkRep();
         return longitude;
     }
 
@@ -122,10 +126,12 @@ public class GeoPoint {
      * @requires gp != null
      **/
     public double distanceTo(GeoPoint gp) {
+        checkRep();
         double dLat = (gp.latitude - this.latitude) / 1_000_000.0;
         double dLon = (gp.longitude - this.longitude) / 1_000_000.0;
         double latDist = dLat * KM_PER_DEGREE_LATITUDE;
         double lonDist = dLon * KM_PER_DEGREE_LONGITUDE;
+        checkRep();
         return Math.sqrt(latDist * latDist + lonDist * lonDist);
     }
 
@@ -140,6 +146,7 @@ public class GeoPoint {
      * @requires gp != null && !this.equals(gp)
      **/
     public double headingTo(GeoPoint gp) {
+        checkRep();
         double deltaLat = (gp.latitude - this.latitude) / 1_000_000.0;
         double deltaLon = (gp.longitude - this.longitude) / 1_000_000.0;
         double latDist = deltaLat * KM_PER_DEGREE_LATITUDE;
@@ -148,6 +155,7 @@ public class GeoPoint {
         if (h < 0) {
 			h += 360;
 		}
+        checkRep();
         return h;
     }
 
@@ -159,10 +167,10 @@ public class GeoPoint {
      * gp.latitude = this.latitude && gp.longitude = this.longitude
      **/
     public boolean equals(Object gp) {
+        checkRep();
         if (this == gp) return true;
-        if (gp == null || !(gp instanceof GeoPoint)) return false;
-
-        GeoPoint other = (GeoPoint) gp;
+        if (!(gp instanceof GeoPoint other)) return false;
+        checkRep();
         return this.latitude == other.latitude && this.longitude == other.longitude;
     }
 
@@ -173,6 +181,7 @@ public class GeoPoint {
      * @return a hash code value for this GeoPoint.
      **/
     public int hashCode() {
+        checkRep();
         return 31 * this.latitude + this.longitude;
     }
 
@@ -183,8 +192,10 @@ public class GeoPoint {
      * @return a string representation of this GeoPoint.
      **/
     public String toString() {
+        checkRep();
         double latDeg = latitude / 1_000_000.0;
         double lonDeg = longitude / 1_000_000.0;
+        checkRep();
         return String.format("(%.6f°, %.6f°)", latDeg, lonDeg);
     }
 

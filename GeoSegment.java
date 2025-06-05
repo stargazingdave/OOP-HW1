@@ -44,8 +44,20 @@ public class GeoSegment {
     private final GeoPoint p1;
     private final GeoPoint p2;
 
-    // TODO Write abstraction function and representation invariant
+    // Abs. Function:
+    //   represents a straight geographic line that starts at this.p1 and ends at this.p2
+    //   with a name of this.name
 
+    // Rep. Invariant:
+    //   this.name != null
+    //   this.p1 != null
+    //   this.p2 != null
+
+    private void checkRep() {
+        assert this.name != null : "Name cannot be null";
+        assert this.p1 != null : "First endpoint cannot be null";
+        assert this.p2 != null : "Second endpoint cannot be null";
+    }
 
     /**
      * Constructs a new GeoSegment with the specified name and endpoints.
@@ -57,6 +69,7 @@ public class GeoSegment {
         this.name = name;
         this.p1 = p1;
         this.p2 = p2;
+        checkRep();
     }
 
 
@@ -67,8 +80,8 @@ public class GeoSegment {
      * && gs.p1 = this.p2 && gs.p2 = this.p1
      **/
     public GeoSegment reverse() {
-        GeoSegment gs = new GeoSegment(this.name, this.p2, this.p1);
-        return gs;
+        checkRep();
+        return new GeoSegment(this.name, this.p2, this.p1);
     }
 
 
@@ -78,6 +91,7 @@ public class GeoSegment {
      * @return the name of this GeoSegment.
      */
     public String getName() {
+        checkRep();
         return this.name;
     }
 
@@ -88,6 +102,7 @@ public class GeoSegment {
      * @return first endpoint of the segment.
      */
     public GeoPoint getP1() {
+        checkRep();
         return this.p1;
     }
 
@@ -98,6 +113,7 @@ public class GeoSegment {
      * @return second endpoint of the segment.
      */
     public GeoPoint getP2() {
+        checkRep();
         return this.p2;
     }
 
@@ -109,6 +125,7 @@ public class GeoSegment {
      * Technion approximation.
      */
     public double getLength() {
+        checkRep();
         return this.p1.distanceTo(this.p2);
     }
 
@@ -117,11 +134,15 @@ public class GeoSegment {
      * Returns the compass heading from p1 to p2.
      *
      * @return the compass heading from p1 to p2, in degrees, using the
-     * flat-surface, near the Technion approximation.
-     * @requires this.length != 0
+     * flat-surface, near the Technion approximation. If p1 and p2 are
+     * equal (length == 0), returns 0.
      **/
     public double getHeading() {
-        retrurn this.p1.headingTo(this.p2);
+        checkRep();
+        if (this.p1.equals(this.p2)) {
+            return 0;
+        }
+        return this.p1.headingTo(this.p2);
     }
 
 
@@ -132,13 +153,14 @@ public class GeoSegment {
      * && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
      **/
     public boolean equals(Object gs) {
+        checkRep();
         if (this == gs) return true;
-        if (gs == null || !(gs instanceof GeoSegment)) return false;
+        if (!(gs instanceof GeoSegment other)) return false;
 
-        GeoSegment other = (GeoSegment) gs;
         boolean sameName = this.name.equals(other.name);
         boolean sameP1 = this.p1.equals(other.p1);
         boolean sameP2 = this.p2.equals(other.p2);
+        checkRep();
         return sameName && sameP1 && sameP2;
     }
 
@@ -149,10 +171,12 @@ public class GeoSegment {
      * @return a hash code value for this.
      **/
     public int hashCode() {
+        checkRep();
         int result = 17;
         result = 31 * result + name.hashCode();
-        result = 31 * result + start.hashCode();
-        result = 31 * result + end.hashCode();
+        result = 31 * result + p1.hashCode();
+        result = 31 * result + p2.hashCode();
+        result = 31 * result + Double.hashCode(getLength());
         return result;
     }
 
@@ -163,6 +187,7 @@ public class GeoSegment {
      * @return a string representation of this.
      **/
     public String toString() {
+        checkRep();
         StringBuilder sb = new StringBuilder();
         sb.append("GeoSegment: ");
         sb.append(this.name);
@@ -171,6 +196,7 @@ public class GeoSegment {
         sb.append(", ");
         sb.append(this.p2.toString());
         sb.append("]");
+        checkRep();
         return sb.toString();
     }
 

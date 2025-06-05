@@ -24,6 +24,9 @@ public class RouteFormatterGUI extends JPanel {
 	private JTextArea txtWalkingDirections;
 	private JTextArea txtDrivingDirections;
 
+	private final WalkingRouteFormatter walkingFormatter = new WalkingRouteFormatter();
+	private final DrivingRouteFormatter drivingFormatter = new DrivingRouteFormatter();
+
 
 	/**
 	 * Creates a new RoutFormatterGUI JPanel.
@@ -139,13 +142,22 @@ public class RouteFormatterGUI extends JPanel {
 	 * 			defined by Route.addSegment(). In addition, updates the
 	 * 			walking direction and the driving direction of the GUI
 	 * 			with the return value of
-	 * 			RouteDirection.computeDirections(this.route,0)
+	 * 			RouteFormatter.computeDirections(this.route,0)
 	 */
 	public void addSegment(GeoSegment segment) {
 		DefaultListModel<GeoSegment> model =
 				(DefaultListModel<GeoSegment>)(this.lstSegments.getModel());
-		
-		// TODO Write the body of this method
+
+		if (this.route == null) {
+			this.route = new Route(segment);
+		} else {
+			this.route = this.route.addSegment(segment);
+		}
+
+		model.addElement(segment);
+
+		txtWalkingDirections.setText(walkingFormatter.computeDirections(this.route, 0));
+		txtDrivingDirections.setText(drivingFormatter.computeDirections(this.route, 0));
 	}
 
 
